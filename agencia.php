@@ -43,7 +43,7 @@ function cadastrarConta(array &$clientes): bool
     ];
 
     print "Conta criada com sucesso\n";
-    print "O número da sua conta é: $numConta";
+    print "O número da sua conta é: $numConta\n";
     return true;
 }
 
@@ -78,11 +78,12 @@ function menu()
     print str_repeat("=", 20) . "\n";
     print "1 - cadastrar cliente\n";
     print "2 - cadastrar conta\n";
-    print "3 - cadastrar depositar\n";
-    print "4 - cadastrar sacar\n";
-    print "5 - cadastrar consultar saldo\n";
-    print "6 - consultar extrato\n";
-    print "7 - sair\n";
+    print "3 - Depositar\n";
+    print "4 - Sacar\n";
+    print "5 - Consultar saldo\n";
+    print "6 - Consultar extrato\n";
+    print "7 - Consultar cliente\n";
+    print "8 - Sair\n";
     print str_repeat("=", 58) . "\n";
 }
 
@@ -107,8 +108,16 @@ while (true) {
         case '4':
             sacar($clientes);
             break;
-
+        case '5':
+            ConsultarSaldo($clientes);
+            break;
+        case '6':
+            ConsultarExtrato($clientes);
+            break;
         case '7':
+            break;
+
+        case '8':
             print "Obrigado por usar nosso banco";
             die();
 
@@ -121,9 +130,28 @@ while (true) {
 function sacar(&$clientes)
 {
     $cpf = readline("Informe seu CPF: ");
-    $conta = readline("Informe o número da conta: ");
+    $numConta = readline("Informe o número da conta: ");
     $valorSaque = readline("Informe o valor do saque: ");
-    if ($clientes[$cpf]['contas'][$conta]['saldo'] >=$valorSaque){
-    $clientes[$cpf]['contas'][$conta]['saldo'] -= $valorSaque;
+    if ($clientes[$cpf]['contas'][$numConta]['saldo'] >= $valorSaque) {
+        $clientes[$cpf]['contas'][$numConta]['saldo'] -= $valorSaque;
+        $dataHora = date('d/m/Y H:i');
+        $clientes[$cpf]['contas'][$numConta]['extrato'][] = "Saque de R$ $valorSaque em $dataHora";
     }
+}
+
+function ConsultarSaldo(&$clientes)
+{
+    $cpf = readline("Informe seu CPF: ");
+    $numConta = readline("Informe o número da conta: ");
+    $saldo =  $clientes[$cpf]['contas'][$numConta]['saldo'];
+    $cheque_especial = CHEQUE_ESPECIAL;
+    print "Cheque Especial: R$$cheque_especial\n";
+    print "Saldo: R$$saldo\n";
+}
+function ConsultarExtrato(&$clientes)
+{
+    $cpf = readline("Informe seu CPF: ");
+    $numConta = readline("Informe o número da conta: ");
+    $extrato =  $clientes[$cpf]['contas'][$numConta]['extrato'][0];
+    print $extrato;
 }
